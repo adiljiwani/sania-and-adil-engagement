@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
+// Create the validation schema
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
-  dietaryRestrictions: yup.string(),
+  dietaryRestrictions: yup.string().nullable().optional(),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -23,10 +24,16 @@ export default function RSVPForm() {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: yupResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(schema) as any,
+    defaultValues: {
+      name: '',
+      email: '',
+      dietaryRestrictions: undefined,
+    },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
@@ -47,8 +54,9 @@ export default function RSVPForm() {
       } else {
         throw new Error(result.message);
       }
-    } catch (error) {
-      setSubmitStatus({ type: 'error', message: 'Failed to submit RSVP. Please try again.' });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit RSVP. Please try again.';
+      setSubmitStatus({ type: 'error', message: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -90,7 +98,7 @@ export default function RSVPForm() {
         {errors.email && <p className="text-red-500 text-xs italic">{errors.email.message}</p>}
       </div>
 
-      <div className="mb-4">
+      <div className="mb-6">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dietaryRestrictions">
           Dietary Restrictions
         </label>

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { status: 'error', message: 'Failed to submit RSVP' },
+      { status: 'error', message: 'Failed to submit RSVP, error: ' + error },
       { status: 500 }
     );
   }

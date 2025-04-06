@@ -1,4 +1,3 @@
-import Image from "next/image";
 import ImageCarousel from '@/components/ImageCarousel';
 import RSVPForm from '@/components/RSVPForm';
 import { getImages } from '@/utils/getImages';
@@ -15,7 +14,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8">Sania & Adil</h1>
           <p className="text-xl text-center mb-12">
-            We're getting engaged! Join us in celebrating this special moment.
+            We&apos;re getting engaged! Join us in celebrating this special moment.
           </p>
           
           <div className="grid md:grid-cols-2 gap-8">
