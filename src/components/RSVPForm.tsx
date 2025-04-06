@@ -8,14 +8,10 @@ import * as yup from 'yup';
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
-  numberOfGuests: yup.number().min(1, 'At least 1 guest required').required('Number of guests is required'),
   dietaryRestrictions: yup.string(),
-  message: yup.string(),
 });
 
 type FormData = yup.InferType<typeof schema>;
-
-const GOOGLE_APPS_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_APPS_SCRIPT_URL;
 
 export default function RSVPForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +31,7 @@ export default function RSVPForm() {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+      const response = await fetch('/api/rsvp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,20 +91,6 @@ export default function RSVPForm() {
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="numberOfGuests">
-          Number of Guests *
-        </label>
-        <input
-          {...register('numberOfGuests')}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="number"
-          min="1"
-          placeholder="1"
-        />
-        {errors.numberOfGuests && <p className="text-red-500 text-xs italic">{errors.numberOfGuests.message}</p>}
-      </div>
-
-      <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dietaryRestrictions">
           Dietary Restrictions
         </label>
@@ -117,18 +99,6 @@ export default function RSVPForm() {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
           placeholder="Any dietary restrictions?"
-        />
-      </div>
-
-      <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
-          Message
-        </label>
-        <textarea
-          {...register('message')}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          rows={3}
-          placeholder="Any additional notes?"
         />
       </div>
 

@@ -1,21 +1,12 @@
 import Image from "next/image";
 import ImageCarousel from '@/components/ImageCarousel';
 import RSVPForm from '@/components/RSVPForm';
-
-// Replace these with your actual images
-const images = [
-  {
-    src: '/images/engagement1.jpg',
-    alt: 'Engagement photo 1',
-  },
-  {
-    src: '/images/engagement2.jpg',
-    alt: 'Engagement photo 2',
-  },
-  // Add more images as needed
-];
+import { getImages } from '@/utils/getImages';
+import process from "process";
 
 export default function Home() {
+  const images = getImages();
+  
   return (
     <main className="min-h-screen">
       <ImageCarousel images={images} />
@@ -31,9 +22,9 @@ export default function Home() {
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">Event Details</h2>
               <p className="text-lg">
-                <strong>Date:</strong> [Your Date]<br />
-                <strong>Time:</strong> [Your Time]<br />
-                <strong>Location:</strong> [Your Location]
+                <strong>Date:</strong> {process.env.EVENT_DATE}<br />
+                <strong>Time:</strong> {process.env.EVENT_TIME}<br />
+                <strong>Location:</strong> {process.env.EVENT_LOCATION}
               </p>
             </div>
             

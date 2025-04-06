@@ -21,9 +21,13 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
         spaceBetween={30}
         centeredSlides={true}
         autoplay={{
-          delay: 5000,
+          delay: 2000,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+          waitForTransition: true,
         }}
+        speed={1000}
+        effect="fade"
         pagination={{
           clickable: true,
         }}
