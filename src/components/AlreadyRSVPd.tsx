@@ -1,8 +1,6 @@
 interface AlreadyRSVPdProps {
   familyMembers: {
     name: string;
-    side: string;
-    likely: string;
   }[];
 }
 
@@ -21,7 +19,6 @@ export default function AlreadyRSVPd({ familyMembers }: AlreadyRSVPdProps) {
           {familyMembers.map((member, index) => (
             <li key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
               <span className="font-medium">{member.name}</span>
-              <span className="text-sm text-gray-500">{member.side}</span>
             </li>
           ))}
         </ul>
