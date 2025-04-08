@@ -19,7 +19,11 @@ const schema = yup.object({
   name: yup.string().required('Name is required'),
 }).required();
 
-export default function NameLookupForm({ onNameFound }: { onNameFound: (members: FamilyMember[]) => void }) {
+export default function NameLookupForm({ 
+  onNameFound 
+}: { 
+  onNameFound: (members: FamilyMember[], hasRSVPd: boolean) => void 
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +51,7 @@ export default function NameLookupForm({ onNameFound }: { onNameFound: (members:
       const result = await response.json();
 
       if (result.status === 'success') {
-        onNameFound(result.familyMembers);
+        onNameFound(result.familyMembers, result.hasRSVPd);
       } else {
         setError(result.message || 'Name not found in the guest list');
       }

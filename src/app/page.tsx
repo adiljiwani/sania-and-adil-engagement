@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ImageCarousel from '@/components/ImageCarousel';
 import NameLookupForm from '@/components/NameLookupForm';
 import RSVPForm from '@/components/RSVPForm';
+import AlreadyRSVPd from '@/components/AlreadyRSVPd';
 
 interface FamilyMember {
   name: string;
@@ -13,9 +14,11 @@ interface FamilyMember {
 
 export default function Home() {
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[] | null>(null);
+  const [hasRSVPd, setHasRSVPd] = useState(false);
 
-  const handleNameFound = (members: FamilyMember[]) => {
+  const handleNameFound = (members: FamilyMember[], alreadyRSVPd: boolean) => {
     setFamilyMembers(members);
+    setHasRSVPd(alreadyRSVPd);
   };
 
   return (
@@ -32,6 +35,8 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           {!familyMembers ? (
             <NameLookupForm onNameFound={handleNameFound} />
+          ) : hasRSVPd ? (
+            <AlreadyRSVPd familyMembers={familyMembers} />
           ) : (
             <RSVPForm familyMembers={familyMembers} />
           )}

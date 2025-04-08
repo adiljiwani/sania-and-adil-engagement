@@ -53,12 +53,12 @@ export async function POST(request: Request) {
     const sheets = google.sheets({ version: 'v4', auth });
 
     // Read the guest list
-    const response = await sheets.spreadsheets.values.get({
+    const guestListResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: 'Guest List!A:D',
     });
 
-    const rows = response.data.values;
+    const rows = guestListResponse.data.values;
     if (!rows || rows.length === 0) {
       console.log('No data found in the guest list');
       return NextResponse.json(
@@ -94,9 +94,21 @@ export async function POST(request: Request) {
 
     console.log('Found family members:', familyMembers);
 
+    // Check if any family member has already RSVP'd
+    const rsvpResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'RSVP Responses!B:B', // Column B contains names
+    });
+
+    const rsvpNames = rsvpResponse.data.values?.flat() || [];
+    const hasRSVPd = familyMembers.some(member => 
+      rsvpNames.some(rsvpName => rsvpName.toLowerCase() === member.name.toLowerCase())
+    );
+
     return NextResponse.json({
       status: 'success',
       familyMembers,
+      hasRSVPd,
     });
   } catch (error) {
     console.error('Error looking up name:', error);
