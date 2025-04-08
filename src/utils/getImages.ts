@@ -1,23 +1,45 @@
-import fs from 'fs';
-import path from 'path';
+export interface Image {
+  src: string;
+  alt: string;
+}
 
-export function getImages() {
-  // Get the absolute path to the public/images directory
-  const imagesDir = path.join(process.cwd(), 'public/images');
-  
-  // Read all files in the directory
-  const files = fs.readdirSync(imagesDir);
-  
-  // Filter for image files and create the image objects
-  const images = files
-    .filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
-    })
-    .map(file => ({
-      src: `/images/${file}`,
-      alt: `Engagement photo ${file.split('.')[0]}`,
-    }));
-  
-  return images;
+export function getImages(): Image[] {
+  return [
+    {
+      src: '/images/250224_adil_0003.jpg',
+      alt: 'Engagement photo 1',
+    },
+    {
+      src: '/images/250224_adil_0007.jpg',
+      alt: 'Engagement photo 2',
+    },
+    {
+      src: '/images/250224_adil_0017.jpg',
+      alt: 'Engagement photo 3',
+    },
+    {
+      src: '/images/250224_adil_0031.jpg',
+      alt: 'Engagement photo 4',
+    },
+    {
+      src: '/images/250224_adil_0039.jpg',
+      alt: 'Engagement photo 5',
+    },
+    {
+      src: '/images/250224_adil_0101.jpg',
+      alt: 'Engagement photo 6',
+    },
+    {
+      src: '/images/250224_adil_0136.jpg',
+      alt: 'Engagement photo 7',
+    },
+    {
+      src: '/images/250224_adil_0187.jpg',
+      alt: 'Engagement photo 8',
+    },
+    {
+      src: '/images/250224_adil_0230.jpg',
+      alt: 'Engagement photo 9',
+    }
+  ];
 } 

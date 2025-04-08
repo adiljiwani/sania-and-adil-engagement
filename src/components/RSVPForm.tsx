@@ -5,16 +5,31 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-// Create the validation schema
-const schema = yup.object().shape({
-  name: yup.string().required('Name is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  dietaryRestrictions: yup.string().nullable().optional(),
-});
+interface FamilyMember {
+  name: string;
+  side: string;
+  likely: string;
+}
 
-type FormData = yup.InferType<typeof schema>;
+interface FormData {
+  familyMembers: {
+    name: string;
+    email: string;
+    dietaryRestrictions?: string;
+  }[];
+}
 
-export default function RSVPForm() {
+const schema = yup.object({
+  familyMembers: yup.array().of(
+    yup.object({
+      name: yup.string().required('Name is required'),
+      email: yup.string().email('Invalid email').required('Email is required'),
+      dietaryRestrictions: yup.string().optional(),
+    })
+  ).required(),
+}).required();
+
+export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMember[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
@@ -24,12 +39,13 @@ export default function RSVPForm() {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: yupResolver(schema) as any,
+    resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
-      email: '',
-      dietaryRestrictions: undefined,
+      familyMembers: familyMembers.map(member => ({
+        name: member.name,
+        email: '',
+        dietaryRestrictions: '',
+      })),
     },
   });
 
@@ -64,7 +80,7 @@ export default function RSVPForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">RSVP</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">RSVP for Your Family</h2>
       
       {submitStatus && (
         <div className={`p-4 mb-4 rounded ${submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -72,43 +88,38 @@ export default function RSVPForm() {
         </div>
       )}
 
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Name *
-        </label>
-        <input
-          {...register('name')}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text"
-          placeholder="Your name"
-        />
-        {errors.name && <p className="text-red-500 text-xs italic">{errors.name.message}</p>}
-      </div>
+      {familyMembers.map((member, index) => (
+        <div key={index} className="mb-6 p-4 border rounded">
+          <h3 className="text-lg font-semibold mb-4">{member.name}</h3>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`email-${index}`}>
+              Email *
+            </label>
+            <input
+              {...register(`familyMembers.${index}.email`)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="email"
+              placeholder="your@email.com"
+            />
+            {errors.familyMembers?.[index]?.email && (
+              <p className="text-red-500 text-xs italic">{errors.familyMembers[index]?.email?.message}</p>
+            )}
+          </div>
 
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-          Email *
-        </label>
-        <input
-          {...register('email')}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="email"
-          placeholder="your@email.com"
-        />
-        {errors.email && <p className="text-red-500 text-xs italic">{errors.email.message}</p>}
-      </div>
-
-      <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dietaryRestrictions">
-          Dietary Restrictions
-        </label>
-        <input
-          {...register('dietaryRestrictions')}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text"
-          placeholder="Any dietary restrictions?"
-        />
-      </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`dietary-${index}`}>
+              Dietary Restrictions
+            </label>
+            <input
+              {...register(`familyMembers.${index}.dietaryRestrictions`)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="text"
+              placeholder="Any dietary restrictions?"
+            />
+          </div>
+        </div>
+      ))}
 
       <div className="flex items-center justify-center">
         <button
