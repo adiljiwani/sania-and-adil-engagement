@@ -16,7 +16,6 @@ if (missingEnvVars.length > 0) {
 }
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
-const SHEET_ID = process.env.GOOGLE_SHEET_TAB_ID;
 
 const auth = new google.auth.GoogleAuth({
   credentials: {
@@ -25,13 +24,6 @@ const auth = new google.auth.GoogleAuth({
   },
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
-
-interface SheetRow {
-  side: string;
-  name: string;
-  likely: string;
-  family: string;
-}
 
 export async function POST(request: Request) {
   try {

@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
-const SHEET_ID = process.env.GOOGLE_SHEET_TAB_ID;
 
 const auth = new google.auth.GoogleAuth({
   credentials: {

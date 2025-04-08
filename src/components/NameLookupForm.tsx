@@ -56,6 +56,7 @@ export default function NameLookupForm({
         setError(result.message || 'Name not found in the guest list');
       }
     } catch (err) {
+      console.error('Error looking up name:', err);
       setError('Failed to look up name. Please try again.');
     } finally {
       setIsSubmitting(false);

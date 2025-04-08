@@ -15,7 +15,7 @@ export default function AlreadyRSVPd({ familyMembers }: AlreadyRSVPdProps) {
       
       <div className="mb-6">
         <p className="text-center mb-4">
-          We've already received RSVPs for the following family members:
+          We&apos;ve already received RSVPs for the following family members:
         </p>
         <ul className="space-y-2">
           {familyMembers.map((member, index) => (
