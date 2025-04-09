@@ -16,14 +16,16 @@ class EmailService {
 
   async sendEmail(options: EmailOptions) {
     try {
-      await this.transporter.sendMail({
+      const mailOptions = {
         from: process.env.EMAIL_USER,
         to: options.to.email,
         subject: options.subject,
         text: options.text,
         html: options.html,
         attachments: options.attachments,
-      });
+      };
+
+      await this.transporter.sendMail(mailOptions);
       return { success: true };
     } catch (error) {
       console.error('Error sending email:', error);

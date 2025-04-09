@@ -3,6 +3,8 @@ import { google } from 'googleapis';
 import { emailService } from '@/lib/email/service';
 import { createHostNotificationEmail, createGuestConfirmationEmail } from '@/lib/email/templates';
 import { RSVPDetails } from '@/lib/email/types';
+import { createCalendarInvite } from '@/utils/calendar';
+import { getEventDetails } from '@/utils/event';
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
 
@@ -50,21 +52,25 @@ export async function POST(request: Request) {
       familyMembers,
     };
 
+    // Get event details and create calendar invite
+    const eventDetails = getEventDetails();
+    const calendarInvite = createCalendarInvite(eventDetails);
+
     // Send host notification email
     await emailService.sendEmail({
       to: { email: process.env.EMAIL_USER!, name: 'Host' },
       ...createHostNotificationEmail(rsvpDetails)
     });
 
-    // Send guest confirmation email
+    // Send guest confirmation email with calendar invite
     await emailService.sendEmail({
       to: { email: rsvpDetails.email, name: rsvpDetails.name },
-      ...createGuestConfirmationEmail(rsvpDetails, {
-        title: process.env.EVENT_TITLE!,
-        date: process.env.EVENT_DATE!,
-        time: process.env.EVENT_TIME!,
-        location: process.env.EVENT_LOCATION!,
-      })
+      ...createGuestConfirmationEmail(rsvpDetails, calendarInvite),
+      attachments: [{
+        filename: 'event.ics',
+        content: Buffer.from(calendarInvite.icsFile),
+        contentType: 'text/calendar; charset=UTF-8; method=REQUEST',
+      }],
     });
 
     return NextResponse.json({ status: 'success' });

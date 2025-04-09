@@ -1,4 +1,5 @@
-import { RSVPDetails, EventDetails } from './types';
+import { RSVPDetails } from './types';
+import { getEventDetails } from '@/utils/event';
 
 export const createHostNotificationEmail = (rsvpDetails: RSVPDetails) => ({
   subject: `New RSVP from ${rsvpDetails.name}'s Family`,
@@ -15,19 +16,16 @@ export const createHostNotificationEmail = (rsvpDetails: RSVPDetails) => ({
   `
 });
 
-export const createGuestConfirmationEmail = (
-  rsvpDetails: RSVPDetails,
-  eventDetails: EventDetails
-) => ({
-  subject: `RSVP Confirmation - ${eventDetails.title}`,
+export const createGuestConfirmationEmail = (rsvpDetails: RSVPDetails, calendarInvite: { icsFile: string; googleCalendarLink: string }) => ({
+  subject: `RSVP Confirmation - ${getEventDetails().title}`,
   text: `
     Thank you for your RSVP!
     
     Event Details:
-    ${eventDetails.title}
-    Date: ${eventDetails.date}
-    Time: ${eventDetails.time}
-    Location: ${eventDetails.location}
+    ${getEventDetails().title}
+    Date: ${getEventDetails().date}
+    Time: ${getEventDetails().time}
+    Location: ${getEventDetails().location}
     
     Your RSVP Details:
     ${rsvpDetails.familyMembers.map(member => `
@@ -35,6 +33,16 @@ export const createGuestConfirmationEmail = (
       Dietary Restrictions: ${member.dietaryRestrictions || "None"}
     `).join('\n')}
     
-    A calendar invite has been attached to this email.
+    Adding to Your Calendar:
+    
+    1. Click here to add to Google Calendar (recommended):
+    ${calendarInvite.googleCalendarLink}
+    
+    2. Or use the attached .ics file:
+    - On iPhone: Use the Mail app to open the attachment
+    - On Android: Open the .ics file with your calendar app
+    - On Desktop: Double-click the .ics file to open in your default calendar
+    
+    If you have any issues adding the event to your calendar, please let us know!
   `
 }); 
