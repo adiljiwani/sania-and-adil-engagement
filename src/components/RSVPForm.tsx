@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import AlreadyRSVPd from './AlreadyRSVPd';
 
 interface FamilyMember {
   name: string;
@@ -32,6 +33,7 @@ const schema = yup.object({
 export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMember[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [showAlreadyRSVPd, setShowAlreadyRSVPd] = useState(false);
 
   const {
     register,
@@ -66,6 +68,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
 
       if (result.status === 'success') {
         setSubmitStatus({ type: 'success', message: 'RSVP submitted successfully!' });
+        setShowAlreadyRSVPd(true);
         reset();
       } else {
         throw new Error(result.message);
@@ -77,6 +80,10 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
       setIsSubmitting(false);
     }
   };
+
+  if (showAlreadyRSVPd) {
+    return <AlreadyRSVPd familyMembers={familyMembers} />;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
