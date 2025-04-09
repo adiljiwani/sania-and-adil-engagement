@@ -36,7 +36,7 @@ export default function Home() {
           {!familyMembers ? (
             <NameLookupForm onNameFound={handleNameFound} />
           ) : willAttend === false ? (
-            <NotAttendingPage />
+            <NotAttendingPage familyMembers={familyMembers} />
           ) : willAttend === true ? (
             <RSVPForm familyMembers={familyMembers} />
           ) : (
