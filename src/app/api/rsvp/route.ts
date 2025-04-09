@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { emailService } from '@/lib/email/service';
+import { createHostNotificationEmail, createGuestConfirmationEmail } from '@/lib/email/templates';
+import { RSVPDetails } from '@/lib/email/types';
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
 
@@ -11,15 +14,9 @@ const auth = new google.auth.GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
-interface FamilyMemberRSVP {
-  name: string;
-  email: string;
-  dietaryRestrictions?: string;
-}
-
 export async function POST(request: Request) {
   try {
-    const { familyMembers } = await request.json() as { familyMembers: FamilyMemberRSVP[] };
+    const { familyMembers } = await request.json() as { familyMembers: RSVPDetails['familyMembers'] };
 
     const sheets = google.sheets({ version: 'v4', auth });
     
@@ -45,23 +42,30 @@ export async function POST(request: Request) {
       },
     });
 
-    // Send email notification using the send-email endpoint
-    const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: familyMembers[0].name,
-        email: familyMembers[0].email,
-        dietaryRestrictions: familyMembers[0].dietaryRestrictions,
-        familyMembers: familyMembers,
-      }),
+    // Prepare RSVP details for emails
+    const rsvpDetails: RSVPDetails = {
+      name: familyMembers[0].name,
+      email: familyMembers[0].email,
+      dietaryRestrictions: familyMembers[0].dietaryRestrictions,
+      familyMembers,
+    };
+
+    // Send host notification email
+    await emailService.sendEmail({
+      to: { email: process.env.EMAIL_USER!, name: 'Host' },
+      ...createHostNotificationEmail(rsvpDetails)
     });
 
-    if (!emailResponse.ok) {
-      throw new Error('Failed to send email notification');
-    }
+    // Send guest confirmation email
+    await emailService.sendEmail({
+      to: { email: rsvpDetails.email, name: rsvpDetails.name },
+      ...createGuestConfirmationEmail(rsvpDetails, {
+        title: process.env.EVENT_TITLE!,
+        date: process.env.EVENT_DATE!,
+        time: process.env.EVENT_TIME!,
+        location: process.env.EVENT_LOCATION!,
+      })
+    });
 
     return NextResponse.json({ status: 'success' });
   } catch (error) {
