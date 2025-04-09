@@ -45,6 +45,24 @@ export async function POST(request: Request) {
       },
     });
 
+    // Send email notification using the send-email endpoint
+    const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: familyMembers[0].name,
+        email: familyMembers[0].email,
+        dietaryRestrictions: familyMembers[0].dietaryRestrictions,
+        familyMembers: familyMembers,
+      }),
+    });
+
+    if (!emailResponse.ok) {
+      throw new Error('Failed to send email notification');
+    }
+
     return NextResponse.json({ status: 'success' });
   } catch (error) {
     console.error('Error submitting RSVP:', error);
