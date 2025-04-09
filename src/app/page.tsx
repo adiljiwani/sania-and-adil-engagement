@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import ImageCarousel from '@/components/ImageCarousel';
 import NameLookupForm from '@/components/NameLookupForm';
+import AttendanceQuestion from '@/components/AttendanceQuestion';
+import NotAttendingPage from '@/components/NotAttendingPage';
 import RSVPForm from '@/components/RSVPForm';
-import AlreadyRSVPd from '@/components/AlreadyRSVPd';
 
 interface FamilyMember {
   name: string;
@@ -14,11 +15,10 @@ interface FamilyMember {
 
 export default function Home() {
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[] | null>(null);
-  const [hasRSVPd, setHasRSVPd] = useState(false);
+  const [willAttend, setWillAttend] = useState<boolean | null>(null);
 
-  const handleNameFound = (members: FamilyMember[], alreadyRSVPd: boolean) => {
+  const handleNameFound = (members: FamilyMember[]) => {
     setFamilyMembers(members);
-    setHasRSVPd(alreadyRSVPd);
   };
 
   return (
@@ -35,10 +35,12 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           {!familyMembers ? (
             <NameLookupForm onNameFound={handleNameFound} />
-          ) : hasRSVPd ? (
-            <AlreadyRSVPd familyMembers={familyMembers} />
-          ) : (
+          ) : willAttend === false ? (
+            <NotAttendingPage />
+          ) : willAttend === true ? (
             <RSVPForm familyMembers={familyMembers} />
+          ) : (
+            <AttendanceQuestion onAnswer={setWillAttend} />
           )}
         </div>
       </div>
