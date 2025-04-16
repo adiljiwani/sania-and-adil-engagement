@@ -51,6 +51,9 @@ export default function ImageCarousel() {
                 fill
                 className="object-cover"
                 priority={index === 0}
+                quality={75}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading={index === 0 ? 'eager' : 'lazy'}
               />
             </div>
           </SwiperSlide>
