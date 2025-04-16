@@ -16,6 +16,9 @@ const auth = new google.auth.GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
+// Track sent emails to prevent duplicates
+const sentEmails = new Set<string>();
+
 export async function POST(request: Request) {
   try {
     const { familyMembers } = await request.json() as { 
@@ -49,7 +52,10 @@ export async function POST(request: Request) {
 
     // Only send emails and create calendar invite if attending
     for (const member of familyMembers) {
-      if (member.attending) {
+      if (member.attending && member.email && !sentEmails.has(member.email)) {
+        // Mark this email as sent
+        sentEmails.add(member.email);
+
         // Prepare RSVP details for emails
         const rsvpDetails: RSVPDetails = {
           name: member.name,

@@ -15,7 +15,7 @@ interface FamilyMember {
 interface FormData {
   familyMembers: {
     name: string;
-    email: string;
+    email?: string;
     dietaryRestrictions?: string;
     attending: boolean;
   }[];
@@ -25,7 +25,11 @@ const schema = yup.object({
   familyMembers: yup.array().of(
     yup.object({
       name: yup.string().required('Name is required'),
-      email: yup.string().email('Invalid email').required('Email is required'),
+      email: yup.string().email('Invalid email').when('attending', {
+        is: true,
+        then: (schema) => schema.required('Email is required when attending'),
+        otherwise: (schema) => schema.optional(),
+      }),
       dietaryRestrictions: yup.string().optional(),
       attending: yup.boolean().required('Please select attendance status'),
     })
