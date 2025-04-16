@@ -21,7 +21,7 @@ export default function AttendanceQuestion({ onAnswer }: AttendanceQuestionProps
           }}
           className={`px-6 py-3 rounded-lg font-medium ${
             selected === true
-              ? 'bg-pink-500 text-white'
+              ? 'bg-black text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >

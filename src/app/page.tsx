@@ -22,16 +22,15 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
+    <main className="min-h-screen bg-gradient-to-b from-[#FFFFEC] to-[#FFFFFF]">
+      <div className="w-full">
+        <ImageCarousel />
+      </div>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-pink-600">
-          Welcome to Our Engagement Party
-        </h1>
+        {/* <h1 className="text-6xl font-bold text-center mb-8 text-black-600 font-['Filena']">
+          Adil & Sania's Engagement Party
+        </h1> */}
         
-        <div className="mb-12">
-          <ImageCarousel />
-        </div>
-
         <div className="max-w-2xl mx-auto">
           {!familyMembers ? (
             <NameLookupForm onNameFound={handleNameFound} />

@@ -3,17 +3,17 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import type { Image as ImageType } from '@/utils/getImages';
 import { getImages } from '@/utils/getImages';
 
 import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 export default function ImageCarousel() {
   const [mounted, setMounted] = useState(false);
-  const images = getImages();
+  const originalImages = getImages();
+  // Create a larger array of images to ensure smooth continuous scrolling
+  const images = [...originalImages, ...originalImages, ...originalImages, ...originalImages, ...originalImages];
 
   useEffect(() => {
     setMounted(true);
@@ -24,29 +24,32 @@ export default function ImageCarousel() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-screen -mx-4">
       <Swiper
-        spaceBetween={30}
-        centeredSlides={true}
+        spaceBetween={0}
+        slidesPerView="auto"
+        centeredSlides={false}
         autoplay={{
-          delay: 2000,
+          delay: 0,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+          stopOnLastSlide: false,
         }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
-        modules={[Autoplay, Pagination, Navigation]}
+        speed={2000}
+        loop={true}
+        loopAdditionalSlides={50}
+        allowTouchMove={false}
+        modules={[Autoplay]}
         className="mySwiper"
       >
         {images.map((image: ImageType, index: number) => (
-          <SwiperSlide key={index}>
-            <div className="relative w-full h-[500px]">
+          <SwiperSlide key={`${image.src}-${index}`} className="!w-auto">
+            <div className="relative h-[500px] w-[500px]">
               <Image
                 src={image.src}
                 alt={image.alt}
                 fill
-                className="object-cover rounded-lg"
+                className="object-cover"
                 priority={index === 0}
               />
             </div>

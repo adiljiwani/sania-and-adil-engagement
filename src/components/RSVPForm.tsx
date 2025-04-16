@@ -132,7 +132,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+          className="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           {isSubmitting ? 'Submitting...' : 'Submit RSVP'}
         </button>

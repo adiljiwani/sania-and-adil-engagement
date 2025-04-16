@@ -7,7 +7,7 @@ interface AlreadyRSVPdProps {
 export default function AlreadyRSVPd({ familyMembers }: AlreadyRSVPdProps) {
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center text-pink-600">
+      <h2 className="text-2xl font-bold mb-6 text-center text-black">
         Thank You for Your RSVP!
       </h2>
       
