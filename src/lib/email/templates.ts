@@ -1,21 +1,6 @@
 import { RSVPDetails } from './types';
 import { getEventDetails } from '@/utils/event';
 
-export const createHostNotificationEmail = (rsvpDetails: RSVPDetails) => ({
-  subject: `New RSVP from ${rsvpDetails.name}'s Family`,
-  text: `
-    New RSVP Details:
-    
-    ${rsvpDetails.familyMembers.map(member => `
-      Name: ${member.name}
-      Email: ${member.email}
-      Dietary Restrictions: ${member.dietaryRestrictions || "None"}
-    `).join('\n')}
-    
-    View all responses in your Google Sheet.
-  `
-});
-
 export const createGuestConfirmationEmail = (rsvpDetails: RSVPDetails, calendarInvite: { icsFile: string; googleCalendarLink: string }) => ({
   subject: `RSVP Confirmation - ${getEventDetails().title}`,
   text: `

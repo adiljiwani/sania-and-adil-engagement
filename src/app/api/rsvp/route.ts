@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { emailService } from '@/lib/email/service';
-import { createHostNotificationEmail, createGuestConfirmationEmail } from '@/lib/email/templates';
+import { createGuestConfirmationEmail } from '@/lib/email/templates';
 import { RSVPDetails } from '@/lib/email/types';
 import { createCalendarInvite } from '@/utils/calendar';
 import { getEventDetails } from '@/utils/event';
@@ -18,9 +18,8 @@ const auth = new google.auth.GoogleAuth({
 
 export async function POST(request: Request) {
   try {
-    const { familyMembers, isAttending } = await request.json() as { 
+    const { familyMembers } = await request.json() as { 
       familyMembers: RSVPDetails['familyMembers'];
-      isAttending: boolean;
     };
 
     const sheets = google.sheets({ version: 'v4', auth });
@@ -35,13 +34,13 @@ export async function POST(request: Request) {
       member.name,
       member.email || '',
       member.dietaryRestrictions || '',
-      isAttending ? 'Yes' : 'No', // Add attending status
+      member.attending ? 'Yes' : 'No',
     ]);
 
     // Write the data to the sheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'RSVP Responses!A:E', // Updated range to include attending column
+      range: 'RSVP Responses!A:E',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values,
@@ -49,37 +48,32 @@ export async function POST(request: Request) {
     });
 
     // Only send emails and create calendar invite if attending
-    if (isAttending) {
-      // Prepare RSVP details for emails
-      const rsvpDetails: RSVPDetails = {
-        name: familyMembers[0].name,
-        email: familyMembers[0].email,
-        dietaryRestrictions: familyMembers[0].dietaryRestrictions,
-        familyMembers,
-      };
+    for (const member of familyMembers) {
+      if (member.attending) {
+        // Prepare RSVP details for emails
+        const rsvpDetails: RSVPDetails = {
+          name: member.name,
+          email: member.email,
+          dietaryRestrictions: member.dietaryRestrictions,
+          familyMembers,
+        };
 
-      // Get event details and create calendar invite
-      const eventDetails = getEventDetails();
-      const calendarInvite = createCalendarInvite(eventDetails);
+        // Get event details and create calendar invite
+        const eventDetails = getEventDetails();
+        const calendarInvite = createCalendarInvite(eventDetails);
 
-      // Send host notification email
-      await emailService.sendEmail({
-        to: { email: process.env.EMAIL_USER!, name: 'Host' },
-        ...createHostNotificationEmail(rsvpDetails)
-      });
-
-      // Send guest confirmation email with calendar invite
-      await emailService.sendEmail({
-        to: { email: rsvpDetails.email, name: rsvpDetails.name },
-        ...createGuestConfirmationEmail(rsvpDetails, calendarInvite),
-        attachments: [{
-          filename: 'event.ics',
-          content: Buffer.from(calendarInvite.icsFile),
-          contentType: 'text/calendar; charset=UTF-8; method=REQUEST',
-        }],
-      });
+        // Send guest confirmation email with calendar invite
+        await emailService.sendEmail({
+          to: { email: rsvpDetails.email, name: rsvpDetails.name },
+          ...createGuestConfirmationEmail(rsvpDetails, calendarInvite),
+          attachments: [{
+            filename: 'event.ics',
+            content: Buffer.from(calendarInvite.icsFile),
+            contentType: 'text/calendar; charset=UTF-8; method=REQUEST',
+          }],
+        });
+      }
     }
-
     return NextResponse.json({ status: 'success' });
   } catch (error) {
     console.error('Error submitting RSVP:', error);

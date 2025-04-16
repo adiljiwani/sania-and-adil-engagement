@@ -19,6 +19,7 @@ export interface RSVPDetails {
     name: string;
     email: string;
     dietaryRestrictions?: string;
+    attending: boolean;
   }[];
 }
 

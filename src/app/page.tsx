@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import ImageCarousel from '@/components/ImageCarousel';
 import NameLookupForm from '@/components/NameLookupForm';
-import AttendanceQuestion from '@/components/AttendanceQuestion';
-import NotAttendingPage from '@/components/NotAttendingPage';
 import RSVPForm from '@/components/RSVPForm';
+import AlreadyRSVPd from '@/components/AlreadyRSVPd';
 
 interface FamilyMember {
   name: string;
@@ -15,10 +14,16 @@ interface FamilyMember {
 
 export default function Home() {
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[] | null>(null);
-  const [willAttend, setWillAttend] = useState<boolean | null>(null);
+  const [showAlreadyRSVPd, setShowAlreadyRSVPd] = useState(false);
 
   const handleNameFound = (members: FamilyMember[]) => {
     setFamilyMembers(members);
+    setShowAlreadyRSVPd(false);
+  };
+
+  const handleAlreadyRSVPd = (members: FamilyMember[]) => {
+    setFamilyMembers(members);
+    setShowAlreadyRSVPd(true);
   };
 
   return (
@@ -33,13 +38,14 @@ export default function Home() {
         
         <div className="max-w-2xl mx-auto">
           {!familyMembers ? (
-            <NameLookupForm onNameFound={handleNameFound} />
-          ) : willAttend === false ? (
-            <NotAttendingPage familyMembers={familyMembers} />
-          ) : willAttend === true ? (
-            <RSVPForm familyMembers={familyMembers} />
+            <NameLookupForm 
+              onNameFound={handleNameFound} 
+              onAlreadyRSVPd={handleAlreadyRSVPd} 
+            />
+          ) : showAlreadyRSVPd ? (
+            <AlreadyRSVPd familyMembers={familyMembers} />
           ) : (
-            <AttendanceQuestion onAnswer={setWillAttend} />
+            <RSVPForm familyMembers={familyMembers} />
           )}
         </div>
       </div>

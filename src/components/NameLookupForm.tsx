@@ -21,9 +21,10 @@ const schema = yup.object({
 
 interface NameLookupFormProps {
   onNameFound: (members: FamilyMember[]) => void;
+  onAlreadyRSVPd: (members: FamilyMember[]) => void;
 }
 
-export default function NameLookupForm({ onNameFound }: NameLookupFormProps) {
+export default function NameLookupForm({ onNameFound, onAlreadyRSVPd }: NameLookupFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +52,11 @@ export default function NameLookupForm({ onNameFound }: NameLookupFormProps) {
       const result = await response.json();
 
       if (result.status === 'success') {
-        onNameFound(result.familyMembers);
+        if (result.hasRSVPd) {
+          onAlreadyRSVPd(result.familyMembers);
+        } else {
+          onNameFound(result.familyMembers);
+        }
       } else {
         setError(result.message || 'Name not found in the guest list');
       }

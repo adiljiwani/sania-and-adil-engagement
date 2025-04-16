@@ -17,6 +17,7 @@ interface FormData {
     name: string;
     email: string;
     dietaryRestrictions?: string;
+    attending: boolean;
   }[];
 }
 
@@ -26,6 +27,7 @@ const schema = yup.object({
       name: yup.string().required('Name is required'),
       email: yup.string().email('Invalid email').required('Email is required'),
       dietaryRestrictions: yup.string().optional(),
+      attending: yup.boolean().required('Please select attendance status'),
     })
   ).required(),
 }).required();
@@ -40,6 +42,8 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -47,6 +51,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         name: member.name,
         email: '',
         dietaryRestrictions: '',
+        attending: true,
       })),
     },
   });
@@ -99,6 +104,39 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         <div key={index} className="mb-6 p-4 border rounded">
           <h3 className="text-lg font-semibold mb-4">{member.name}</h3>
           
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Will you be attending? *
+            </label>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={() => setValue(`familyMembers.${index}.attending`, true)}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  watch(`familyMembers.${index}.attending`) === true
+                    ? 'bg-black text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                onClick={() => setValue(`familyMembers.${index}.attending`, false)}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  watch(`familyMembers.${index}.attending`) === false
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                No
+              </button>
+            </div>
+            {errors.familyMembers?.[index]?.attending && (
+              <p className="text-red-500 text-xs italic">{errors.familyMembers[index]?.attending?.message}</p>
+            )}
+          </div>
+
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`email-${index}`}>
               Email *
