@@ -5,6 +5,7 @@ import ImageCarousel from '@/components/ImageCarousel';
 import NameLookupForm from '@/components/NameLookupForm';
 import RSVPForm from '@/components/RSVPForm';
 import AlreadyRSVPd from '@/components/AlreadyRSVPd';
+import EventDetailsCard from '@/components/EventDetailsCard';
 
 interface FamilyMember {
   name: string;
@@ -32,9 +33,7 @@ export default function Home() {
         <ImageCarousel />
       </div>
       <div className="container mx-auto px-4 py-8">
-        {/* <h1 className="text-6xl font-bold text-center mb-8 text-black-600 font-['Filena']">
-          Adil & Sania's Engagement Party
-        </h1> */}
+        <EventDetailsCard />
         
         <div className="max-w-2xl mx-auto">
           {!familyMembers ? (

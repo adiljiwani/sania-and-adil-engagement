@@ -125,7 +125,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
                 onClick={() => setValue(`familyMembers.${index}.attending`, false)}
                 className={`px-4 py-2 rounded-lg font-medium ${
                   watch(`familyMembers.${index}.attending`) === false
-                    ? 'bg-pink-500 text-white'
+                    ? 'bg-black text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
