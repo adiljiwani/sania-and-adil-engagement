@@ -29,7 +29,7 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #c1d0ba;
   --foreground: #171717;
 }
 
@@ -40,16 +40,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background) url('/images/background-landscape.jpeg') no-repeat center center fixed;
-  background-size: cover;
+  background: #c1d0ba;
   color: var(--foreground);
   font-family: 'Filena', sans-serif;
 }
