@@ -28,7 +28,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#FFFFEC] to-[#FFFFFF]">
+    <main className="min-h-screen">
       <div className="w-full">
         <ImageCarousel />
       </div>

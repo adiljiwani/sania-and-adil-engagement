@@ -48,7 +48,8 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--background) url('/images/background-landscape.jpeg') no-repeat center center fixed;
+  background-size: cover;
   color: var(--foreground);
   font-family: 'Filena', sans-serif;
 }
