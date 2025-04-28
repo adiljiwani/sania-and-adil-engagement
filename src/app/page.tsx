@@ -32,10 +32,11 @@ export default function Home() {
       <div className="w-full">
         <ImageCarousel />
       </div>
-      <div className="container mx-auto px-4 py-8">
-        <EventDetailsCard />
-        
-        <div className="max-w-2xl mx-auto">
+      <div className="container mx-auto px-4 py-8 relative">
+        <div className="relative z-20">
+          <EventDetailsCard />
+        </div>
+        <div className="max-w-2xl mx-auto relative z-10">
           {!familyMembers ? (
             <NameLookupForm 
               onNameFound={handleNameFound} 
@@ -46,6 +47,19 @@ export default function Home() {
           ) : (
             <RSVPForm familyMembers={familyMembers} />
           )}
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 flex justify-center items-start z-0"
+          style={{ minHeight: '600px' }}
+        >
+          <img
+            src="/images/background-art.png"
+            alt="Decorative background art"
+            className="w-full max-w-2xl object-contain select-none"
+            style={{ filter: 'blur(0.5px)' }}
+            draggable="false"
+          />
         </div>
       </div>
     </main>

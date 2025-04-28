@@ -16,7 +16,7 @@ interface FormData {
 }
 
 const schema = yup.object({
-  name: yup.string().required('Name is required'),
+  name: yup.string().required('Full name is required'),
 }).required();
 
 interface NameLookupFormProps {
@@ -80,13 +80,13 @@ export default function NameLookupForm({ onNameFound, onAlreadyRSVPd }: NameLook
 
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Name *
+          Full Name *
         </label>
         <input
           {...register('name')}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
-          placeholder="Enter your name"
+          placeholder="Enter your full name"
         />
         {errors.name && <p className="text-red-500 text-xs italic">{errors.name.message}</p>}
       </div>
@@ -95,7 +95,7 @@ export default function NameLookupForm({ onNameFound, onAlreadyRSVPd }: NameLook
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+          className="bg-[#311911] hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           {isSubmitting ? 'Looking up...' : 'Find Name'}
         </button>

@@ -29,7 +29,7 @@
 }
 
 :root {
-  --background: #c1d0ba;
+  --background: #20242B;
   --foreground: #171717;
 }
 
@@ -41,7 +41,7 @@
 }
 
 body {
-  background: #c1d0ba;
+  background: #20242B;
   color: var(--foreground);
   font-family: 'Filena', sans-serif;
 }
