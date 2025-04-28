@@ -29,7 +29,7 @@ export default function EventDetailsCard() {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-center">{eventDetails.title}</h2>
+      <h2 className="text-2xl font-['Playfair_Display'] mb-4 text-center text-[#4F677D]">{eventDetails.title}</h2>
       
       <div className="space-y-4">
         <div className="flex items-center">
