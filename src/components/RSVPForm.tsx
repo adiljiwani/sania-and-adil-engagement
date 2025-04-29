@@ -19,14 +19,15 @@ interface FormData {
     dietaryRestrictions?: string;
     attending: boolean;
   }[];
+  useSingleEmail: boolean;
 }
 
 const schema = yup.object({
   familyMembers: yup.array().of(
     yup.object({
       name: yup.string().required('Name is required'),
-      email: yup.string().email('Invalid email').when('attending', {
-        is: true,
+      email: yup.string().email('Invalid email').when(['attending', 'useSingleEmail'], {
+        is: (attending: boolean, useSingleEmail: boolean) => attending && !useSingleEmail,
         then: (schema) => schema.required('Email is required when attending'),
         otherwise: (schema) => schema.optional(),
       }),
@@ -34,6 +35,7 @@ const schema = yup.object({
       attending: yup.boolean().required('Please select attendance status'),
     })
   ).required(),
+  useSingleEmail: yup.boolean().required(),
 }).required();
 
 export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMember[] }) {
@@ -57,14 +59,29 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         dietaryRestrictions: '',
         attending: true,
       })),
+      useSingleEmail: false,
     },
   });
 
+  const useSingleEmail = watch('useSingleEmail');
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    console.log("Form submission started");
     setIsSubmitting(true);
     setSubmitStatus(null);
 
     try {
+      console.log("data pre if", data);
+
+      if (data.useSingleEmail && data.familyMembers[0].email) {
+        data.familyMembers = data.familyMembers.map(member => ({
+          ...member,
+          email: member.attending ? data.familyMembers[0].email : undefined,
+        }));
+      }
+
+      console.log("data post if", data);
+
       const response = await fetch('/api/rsvp', {
         method: 'POST',
         headers: {
@@ -73,7 +90,10 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         body: JSON.stringify(data),
       });
 
+      console.log("API response received:", response);
+
       const result = await response.json();
+      console.log("API result:", result);
 
       if (result.status === 'success') {
         setSubmitStatus({ type: 'success', message: 'RSVP submitted successfully!' });
@@ -83,6 +103,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         throw new Error(result.message);
       }
     } catch (err) {
+      console.error("Error during form submission:", err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to submit RSVP. Please try again.';
       setSubmitStatus({ type: 'error', message: errorMessage });
     } finally {
@@ -95,7 +116,15 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-6 bg-white/80 rounded-lg shadow-lg">
+    <form 
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit((data) => {
+          onSubmit(data);
+        })(e);
+      }} 
+      className="max-w-md mx-auto p-6 bg-white/80 rounded-lg shadow-lg"
+    >
       <h2 className="text-2xl mb-6 text-center font-['Playfair_Display'] text-[#4F677D]">RSVP for Your Family</h2>
       
       {submitStatus && (
@@ -141,20 +170,72 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
             )}
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`email-${index}`}>
-              Email *
-            </label>
-            <input
-              {...register(`familyMembers.${index}.email`)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="email"
-              placeholder="your@email.com"
-            />
-            {errors.familyMembers?.[index]?.email && (
-              <p className="text-red-500 text-xs italic">{errors.familyMembers[index]?.email?.message}</p>
-            )}
-          </div>
+          {index === 0 ? (
+            <>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`email-${index}`}>
+                  Email *
+                </label>
+                <input
+                  {...register(`familyMembers.${index}.email`)}
+                  className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                    errors.familyMembers?.[index]?.email ? 'border-red-500' : ''
+                  }`}
+                  type="email"
+                  placeholder="your@email.com"
+                />
+                {errors.familyMembers?.[index]?.email && (
+                  <p className="text-red-500 text-xs italic mt-1">{errors.familyMembers[index]?.email?.message}</p>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <div 
+                  className="flex items-center cursor-pointer"
+                  onClick={() => {
+                    const newValue = !useSingleEmail;
+                    setValue('useSingleEmail', newValue);
+                    if (newValue) {
+                      // Get the first email value
+                      const firstEmail = watch(`familyMembers.0.email`);
+                      // Copy it to all other members
+                      familyMembers.forEach((_, index) => {
+                        if (index > 0) {
+                          setValue(`familyMembers.${index}.email`, firstEmail);
+                        }
+                      });
+                    }
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    {...register('useSingleEmail')}
+                    className="mr-2"
+                  />
+                  <label className="text-gray-700 text-sm font-bold">
+                    Use this email for all members
+                  </label>
+                </div>
+              </div>
+            </>
+          ) : !useSingleEmail && (
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`email-${index}`}>
+                Email *
+              </label>
+              <input
+                {...register(`familyMembers.${index}.email`)}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  errors.familyMembers?.[index]?.email ? 'border-red-500' : ''
+                }`}
+                type="email"
+                placeholder="your@email.com"
+              />
+              {errors.familyMembers?.[index]?.email && (
+                <p className="text-red-500 text-xs italic mt-1">{errors.familyMembers[index]?.email?.message}</p>
+              )}
+            </div>
+          )}
 
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={`dietary-${index}`}>
@@ -174,6 +255,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
         <button
           type="submit"
           disabled={isSubmitting}
+          onClick={() => console.log("Submit button clicked")}
           className="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           {isSubmitting ? 'Submitting...' : 'Submit RSVP'}

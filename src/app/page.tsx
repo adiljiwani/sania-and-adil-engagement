@@ -5,7 +5,6 @@ import ImageCarousel from '@/components/ImageCarousel';
 import NameLookupForm from '@/components/NameLookupForm';
 import RSVPForm from '@/components/RSVPForm';
 import AlreadyRSVPd from '@/components/AlreadyRSVPd';
-import EventDetailsCard from '@/components/EventDetailsCard';
 import InviteScreen from '@/components/InviteScreen';
 
 interface FamilyMember {
@@ -46,9 +45,6 @@ export default function Home() {
         >
           <div className="w-full max-w-2xl h-full bg-[#EFE1CA] rounded-2xl" />
         </div>
-        {/* <div className="relative z-20">
-          <EventDetailsCard />
-        </div> */}
         <div className="max-w-2xl mx-auto relative z-10">
           {!familyMembers ? (
             <NameLookupForm 
