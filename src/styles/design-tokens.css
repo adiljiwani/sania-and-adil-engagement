@@ -1,0 +1,15 @@
+:root {
+  /* Primary Color */
+  --color-primary: #4F677D;
+
+  /* Secondary Color */
+  --color-secondary: #311911;
+
+  /* Neutral Colors */
+  --color-background: #20242B;
+  --color-foreground: #171717;
+
+  /* Background Colors */
+  --color-background-primary: #20242B;
+  --color-background-secondary: #EFE1CA;
+} 

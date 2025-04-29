@@ -6,8 +6,8 @@ interface InviteScreenProps {
 
 export default function InviteScreen({ onRSVPClick }: InviteScreenProps) {
   return (
-    <div className="relative h-screen w-screen flex">
-      <div className="relative w-1/2 h-full">
+    <div className="relative h-screen w-screen flex flex-col md:flex-row">
+      <div className="relative w-full md:w-1/2 h-1/2 md:h-full">
         <div className="relative h-full">
           <Image
             src="/images/invite.jpg"
@@ -25,7 +25,7 @@ export default function InviteScreen({ onRSVPClick }: InviteScreenProps) {
           </button>
         </div>
       </div>
-      <div className="relative w-1/2 h-full">
+      <div className="relative w-full md:w-1/2 h-1/2 md:h-full">
         <Image
           src="/images/event-details.jpg"
           alt="Event Details"

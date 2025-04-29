@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/design-tokens.css";
 
 @font-face {
   font-family: 'Filena';
@@ -36,8 +37,8 @@
 }
 
 :root {
-  --background: #20242B;
-  --foreground: #171717;
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
 }
 
 @theme inline {
@@ -48,7 +49,36 @@
 }
 
 body {
-  background: #20242B;
+  background: var(--background);
   color: var(--foreground);
   font-family: 'Filena', sans-serif;
+}
+
+/* Design System Utilities */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.button-bg-primary {
+  background-color: var(--color-secondary);
+}
+
+.bg-primary {
+  background-color: var(--color-background-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-background-secondary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-secondary {
+  border-color: var(--color-secondary);
 }

@@ -125,7 +125,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
       }} 
       className="max-w-md mx-auto p-6 bg-white/80 rounded-lg shadow-lg"
     >
-      <h2 className="text-2xl mb-6 text-center font-['Playfair_Display'] text-[#4F677D]">RSVP for Your Family</h2>
+      <h2 className="text-2xl mb-6 text-center font-['Playfair_Display'] text-primary">RSVP for Your Family</h2>
       
       {submitStatus && (
         <div className={`p-4 mb-4 rounded ${submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -134,7 +134,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
       )}
 
       {familyMembers.map((member, index) => (
-        <div key={index} className="mb-6 p-4 border rounded">
+        <div key={index} className="mb-6 p-4 border rounded border-primary">
           <h3 className="text-lg font-semibold mb-4">{member.name}</h3>
           
           <div className="mb-4">
@@ -147,7 +147,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
                 onClick={() => setValue(`familyMembers.${index}.attending`, true)}
                 className={`px-4 py-2 rounded-lg font-medium ${
                   watch(`familyMembers.${index}.attending`) === true
-                    ? 'bg-[#311911] text-white'
+                    ? 'button-bg-primary text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -158,7 +158,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
                 onClick={() => setValue(`familyMembers.${index}.attending`, false)}
                 className={`px-4 py-2 rounded-lg font-medium ${
                   watch(`familyMembers.${index}.attending`) === false
-                    ? 'bg-[#311911] text-white'
+                    ? 'button-bg-primary text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -256,7 +256,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
           type="submit"
           disabled={isSubmitting}
           onClick={() => console.log("Submit button clicked")}
-          className="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+          className="button-bg-primary hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           {isSubmitting ? 'Submitting...' : 'Submit RSVP'}
         </button>

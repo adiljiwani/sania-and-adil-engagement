@@ -70,7 +70,7 @@ export default function NameLookupForm({ onNameFound, onAlreadyRSVPd }: NameLook
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-6 bg-white/80 rounded-lg shadow-lg ">
-      <h2 className="text-2xl mb-6 text-center font-['Playfair_Display'] text-[#4F677D]">Find Your Name</h2>
+      <h2 className="text-2xl mb-6 text-center font-['Playfair_Display'] text-primary">Find Your Name</h2>
       
       {error && (
         <div className="p-4 mb-4 bg-red-100 text-red-700 rounded">
@@ -95,7 +95,7 @@ export default function NameLookupForm({ onNameFound, onAlreadyRSVPd }: NameLook
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-[#311911] hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+          className="button-bg-primary hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           {isSubmitting ? 'Looking up...' : 'Find Name'}
         </button>

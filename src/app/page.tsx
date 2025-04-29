@@ -43,7 +43,7 @@ export default function Home() {
         <div
           className="absolute inset-0 flex justify-center items-end z-0"
         >
-          <div className="w-full max-w-2xl h-full bg-[#EFE1CA] rounded-2xl" />
+          <div className="w-full max-w-2xl h-full bg-secondary rounded-2xl" />
         </div>
         <div className="max-w-2xl mx-auto relative z-10">
           {!familyMembers ? (
