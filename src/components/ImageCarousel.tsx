@@ -29,7 +29,7 @@ export default function ImageCarousel() {
   }
 
   return (
-    <div className="w-screen -mx-4">
+    <div className="w-full overflow-hidden">
       <Swiper
         spaceBetween={0}
         slidesPerView="auto"
@@ -49,7 +49,7 @@ export default function ImageCarousel() {
       >
         {images.map((image: ImageType, index: number) => (
           <SwiperSlide key={`${image.src}-${index}`} className="!w-auto">
-            <div className="relative h-[500px] w-[500px]">
+            <div className="relative h-[250px] w-[500px]">
               <div className={`absolute inset-0 bg-gray-200 transition-opacity duration-500 ${loadedImages.has(image.src) ? 'opacity-0' : 'opacity-100'}`} />
               <Image
                 src={image.src}
