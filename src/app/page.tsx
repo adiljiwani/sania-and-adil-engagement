@@ -54,7 +54,7 @@ export default function Home() {
           style={{ minHeight: '600px' }}
         >
           <img
-            src="/images/background-art.png"
+            src="/images/background-art-2.jpg"
             alt="Decorative background art"
             className="w-full max-w-2xl object-contain select-none"
             style={{ filter: 'blur(0.5px)' }}

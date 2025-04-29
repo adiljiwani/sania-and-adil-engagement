@@ -96,7 +96,7 @@ export default function RSVPForm({ familyMembers }: { familyMembers: FamilyMembe
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center font-['Playfair_Display'] text-[#4F677D]">RSVP for Your Family</h2>
+      <h2 className="text-2xl mb-6 text-center font-['Playfair_Display'] text-[#4F677D]">RSVP for Your Family</h2>
       
       {submitStatus && (
         <div className={`p-4 mb-4 rounded ${submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
