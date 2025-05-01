@@ -46,7 +46,9 @@ export default function NameLookupForm({ onNameFound, onAlreadyRSVPd }: NameLook
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          name: data.name.trim()
+        }),
       });
 
       const result = await response.json();
